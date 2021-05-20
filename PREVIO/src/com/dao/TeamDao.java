@@ -18,7 +18,7 @@ public class TeamDao implements Serializable{
 	public Team findName(String name) {
 		if(name != null) {
 			this.query = new QueryGeneric<Team>();
-			this.query.setQuery("SELECT * WHERE name = '"+name+"'");
+			this.query.setQuery("SELECT * FROM team WHERE name = '"+name+"'");
 			try {
 				this.query.setPs(ConnectionGeneric.getC().prepareStatement(this.query.getQuery()));
 				this.query.setRs(this.query.getPs().executeQuery());
@@ -93,7 +93,7 @@ public class TeamDao implements Serializable{
 	public boolean delete(String id) {
 		if(id != null) {
 			this.query = new QueryGeneric<Team>();
-			query.setQuery("DELETE team FROM team WHERE id = '"+id+"'");
+			query.setQuery("DELETE FROM team WHERE id = '"+id+"'");
 			try {
 				this.query.setPs(ConnectionGeneric.getC().prepareStatement(this.query.getQuery()));
 				if (this.query.getPs().executeUpdate() > 0) {

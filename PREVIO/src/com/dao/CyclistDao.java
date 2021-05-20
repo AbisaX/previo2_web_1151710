@@ -3,6 +3,7 @@ package com.dao;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.entity.*;
@@ -45,6 +46,26 @@ public class CyclistDao implements Serializable {
 
 	public List<Cyclist> list() {
 		this.query = new QueryGeneric<Cyclist>();
+		this.query.setQuery("SELECT * FROM cyclist");
+		this.query.setList(new ArrayList<Cyclist>());
+		try {
+			this.query.setPs(ConnectionGeneric.getC().prepareStatement(this.query.getQuery()));
+			this.query.setRs(this.query.getPs().executeQuery());
+			while (this.query.getRs().next()) {
+				this.query.setEntity(new Cyclist());
+				this.query.getEntity().setId(this.query.getRs().getInt(1));
+				this.query.getEntity().setName(this.query.getRs().getString(2));
+				this.query.getEntity().setEmail(this.query.getRs().getString(3));
+				this.query.getEntity().setBirthdate(this.query.getRs().getString(4));
+				this.query.getEntity().setCountry(this.query.getRs().getString(5));
+				this.query.getEntity().setTeam(this.query.getRs().getString(4));
+				this.query.getList().add(this.query.getEntity());
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			ConnectionGeneric.closeConnection();
+		}
 		return this.query.getList();
 	}
 
@@ -55,7 +76,7 @@ public class CyclistDao implements Serializable {
 			this.query.setQuery("INSERT INTO cyclist(name,email,birthdate,country,team) VALUES (?,?,?,?,?)");
 			try {
 				Cyclist tt = findName(t.getName());
-				Date date = new Date(0000-00-00);
+				Date date = new Date(0000 - 00 - 00);
 				if (tt == null) {
 					this.query.setPs(ConnectionGeneric.getC().prepareStatement(this.query.getQuery()));
 					this.query.getPs().setString(1, t.getName());
@@ -79,10 +100,11 @@ public class CyclistDao implements Serializable {
 	public void update(Cyclist t) {
 		if (t != null) {
 			this.query = new QueryGeneric<Cyclist>();
-			query.setQuery("UPDATE cyclist SET name = ?, email = ?, birthdate = ?, country = ?, team = ?  WHERE id = " + t.getId() + "");
+			query.setQuery("UPDATE cyclist SET name = ?, email = ?, birthdate = ?, country = ?, team = ?  WHERE id = "
+					+ t.getId() + "");
 			try {
 				Cyclist tt = findName(t.getName());
-				Date date = new Date(0000-00-00);
+				Date date = new Date(0000 - 00 - 00);
 				tt = (tt.getName().equalsIgnoreCase(t.getName())) ? null : tt;
 				if (tt == null) {
 					this.query.setPs(ConnectionGeneric.getC().prepareStatement(this.query.getQuery()));

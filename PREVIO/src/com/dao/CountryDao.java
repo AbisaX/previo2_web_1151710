@@ -2,6 +2,8 @@ package com.dao;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.entity.Country;
 import com.util.ConnectionGeneric;
@@ -13,6 +15,27 @@ public class CountryDao implements Serializable{
 	private  QueryGeneric<Country> query;
 	
 	public CountryDao() {
+	}
+	
+	public List<Country> list(){
+		this.query = new QueryGeneric<Country>();
+		this.query.setQuery("SELECT * FROM country");
+		this.query.setList(new ArrayList<Country>());
+		try {
+			this.query.setPs(ConnectionGeneric.getC().prepareStatement(this.query.getQuery()));
+			this.query.setRs(this.query.getPs().executeQuery());
+			while (this.query.getRs().next()) {
+				this.query.setEntity(new Country());
+				this.query.getEntity().setId(this.query.getRs().getString(1));
+				this.query.getEntity().setName(this.query.getRs().getString(2));
+				this.query.getList().add(this.query.getEntity());
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}finally {
+			ConnectionGeneric.closeConnection();
+		}
+		return this.query.getList();
 	}
 	
 	public Country find(String id) {
@@ -55,6 +78,7 @@ public class CountryDao implements Serializable{
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 			}finally {
+				System.out.println("dsss");
 				ConnectionGeneric.closeConnection();
 			}
 		}
@@ -64,12 +88,14 @@ public class CountryDao implements Serializable{
 	public void insert(Country c) {
 		if(c != null) {
 			this.query = new QueryGeneric<Country>();
-			this.query.setQuery("INSERT INTO country(name) VALUES (?)");
+			this.query.setQuery("INSERT INTO country(id,name) VALUES (?,?)");
 			try {
 				Country cc = findName(c.getId());
 				if(cc == null) {
+					
 					this.query.setPs(ConnectionGeneric.getC().prepareStatement(this.query.getQuery()));
-					this.query.getPs().setString(1, c.getName());
+					this.query.getPs().setString(1, c.getId());
+					this.query.getPs().setString(2, c.getName());
 					this.query.getPs().executeUpdate();
 				}else {
 					System.out.println("Ya existe un pais con ese nombre.");

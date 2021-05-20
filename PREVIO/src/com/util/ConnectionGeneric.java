@@ -15,15 +15,17 @@ public class ConnectionGeneric implements Serializable {
 
 	}
 
-	public static Connection getConnection() {
-		try {
-			Class.forName(Variable.DRIVER_BD);
-			c = (Connection) DriverManager.getConnection(Variable.URL_ONE, Variable.USER_BD, Variable.PASSWORD_BD);
-			System.out.println("Exitosa");
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+	public static Connection getConnection(){
+		if(c == null) {
+			try {
+				Class.forName(Variable.DRIVER_BD);
+				c = (Connection) DriverManager.getConnection(Variable.URL_ONE, Variable.USER_BD, Variable.PASSWORD_BD);
+				System.out.println("Exitosa");
+			} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return c;
 	}
@@ -31,6 +33,7 @@ public class ConnectionGeneric implements Serializable {
 	public static void closeConnection() {
 		try {
 			c.close();
+			c = null;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
