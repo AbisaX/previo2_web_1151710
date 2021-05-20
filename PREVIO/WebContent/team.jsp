@@ -18,12 +18,14 @@
 	<h1>Equipos</h1>
 	<div>
 		<jsp:useBean id="c" class="com.dao.CyclistDao" scope="page"></jsp:useBean>
-		<c:set var="list" scope="session" value="${t.list()}" />
+		<c:set var="list" scope="session" value="${c.list()}" />
 		<c:set var="count" value="0" />
 		<c:forEach var="e" items="${list}">
-			<tr>
+			<div>
+				<h1>${e.name}</h1>
+				<h2>${e.country}</h2>
 				<img src="resources/img/uniforme/${e.country}.png">
-			</tr>
+			</div>
 		</c:forEach>
 	</div>
 </body>
